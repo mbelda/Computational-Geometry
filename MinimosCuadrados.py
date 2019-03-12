@@ -50,7 +50,7 @@ class MinimosCuadrados:
         if self.W is []:
             print("Entrena al clasificador")
             return
-        filas, cols = puntos.shape
+        cols = puntos.shape[1]
         Puntosg = np.vstack((np.ones(cols), puntos))
         T = (self.W.T).dot(Puntosg)
         return np.argmax(T, axis=0)
@@ -64,22 +64,25 @@ Salida
     X: matriz con los puntos creados
     T: matriz con las etiquetas asociadas a los puntos en X
 """    
-def creaDatos(K):
-    distClases = 10
-    ndatosxClase = 100
-    dispMedia = 0.8
-    
+def creaDatos(K, distClases, dispMedia, minNxClase, maxNxClase):
+       
     mus = [np.random.randn(2)*distClases]
     for k in range(1, K):
         auxMu = np.random.randn(2)*distClases
         while min([np.linalg.norm(mu - auxMu) for mu in mus]) < 2*distClases:
             auxMu = np.random.randn(2)*distClases
         mus.append(auxMu)
-    
+      
     Ns = []
     for k in range(0, K):
-        Ns.append(ndatosxClase)
+        Ns.append(np.random.randint(minNxClase, maxNxClase))
     N = sum(Ns)
+    
+    T = np.zeros((K,N))
+    cont = 0
+    for k in range(0, K):
+        T[k, cont:cont + Ns[k]] = np.ones(Ns[k])
+        cont += Ns[k]
     
     X = np.zeros((2, N))
     cont = 0
@@ -88,18 +91,17 @@ def creaDatos(K):
         cont += Ns[k]
     
     
-    Unos = np.ones((1,100))
-    Ceros = np.zeros((1,100))
-    T1 = np.hstack((Unos,Ceros,Ceros))
-    T2 = np.hstack((Ceros,Unos,Ceros))
-    T3 = np.hstack((Ceros,Ceros,Unos))
-    T = np.vstack((T1,T2,T3))
     return X, T
     
 if __name__ == '__main__':
     mcc = MinimosCuadrados()
-    K = 3
-    X, T = creaDatos(K)
+    K = 4
+    distClases = 10
+    dispMedia = 0.8
+    minNxClase = 50
+    maxNxClase = 100
+    
+    X, T = creaDatos(K, distClases, dispMedia, minNxClase, maxNxClase)
     mcc.calculaW(X, T)
     
     Xs = np.linspace(-15,15,200)

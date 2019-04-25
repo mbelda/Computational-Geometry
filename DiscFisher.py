@@ -52,9 +52,9 @@ class DiscFisher:
         
 
 
-    def proyecta(self, X, Ns):
+    def proyecta(self, X):
         Xp = []
-        N = sum(Ns)
+        F, N = X.shape
         for i in range(0, N):
             aux = (self.w.T).dot(X[:, i])
             Xp.append(aux)
@@ -73,7 +73,10 @@ class DiscFisher:
         print(raices)
         #Falta que esto funcione bien y mirar que raiz es el minimo
         #(hay a lo sumo 2 raices)
-        return raices[0]
+        if np.polyval(coefs, raices[0]) < np.polyval(coefs, raices[1]):
+            return raices[0]
+        else:    
+            return raices[1]
     """
     Clasifica los puntos dados, es decir, calcula las etiquetas que les
     corresponden usando la matriz W de la clase
@@ -128,14 +131,14 @@ def creaDatos(distClases, minNxClase, maxNxClase):
     
     """Generamos los puntos"""
     X = np.zeros((2, N))
-    medias = []
+    medias = np.zeros((2,2))
     cont = 0
     for k in range(0, 2):
         X[:, cont:cont + Ns[k]] = np.random.randn(2, Ns[k])*varianzas[k] + mus[k][:, np.newaxis]
         aux = 0
         for i in range(cont, cont + Ns[k]):
             aux += X[:, i]
-        medias.append(aux/Ns[k])
+        medias[k] = aux/Ns[k]
         cont += Ns[k]
         
     return X, T, Ns, varianzas, medias
@@ -149,9 +152,11 @@ if __name__ == '__main__':
     X, T, Ns, varianzas, medias = creaDatos(distClases, minNxClase, maxNxClase)
     plt.plot(X[0, :], X[1, :], 'o')
     df.calculaW(X, medias, Ns)
-    Xp = df.proyecta(X, Ns)
-    plt.plot(Xp, '-o') 
-    c = df.calculaC(Ns, varianzas, medias)
+    Xp = df.proyecta(X)
+    mp = df.proyecta(medias)
+    plt.plot(Xp, '-o')
+    c = df.calculaC(Ns, varianzas, mp)
+    plt.plot(c, '-o')
     
 #    Xs = np.linspace(-15,15,200)
 #    Ys = np.linspace(-15,15,200)

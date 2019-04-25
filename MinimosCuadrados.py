@@ -66,6 +66,7 @@ Salida
 """    
 def creaDatos(K, distClases, dispMedia, minNxClase, maxNxClase):
        
+    """Generamos las mu distanciadas para que las clases esten separadas"""
     mus = [np.random.randn(2)*distClases]
     for k in range(1, K):
         auxMu = np.random.randn(2)*distClases
@@ -73,17 +74,20 @@ def creaDatos(K, distClases, dispMedia, minNxClase, maxNxClase):
             auxMu = np.random.randn(2)*distClases
         mus.append(auxMu)
       
+    """Generamos el numero de datos que tendra cada clase"""    
     Ns = []
     for k in range(0, K):
         Ns.append(np.random.randint(minNxClase, maxNxClase))
     N = sum(Ns)
     
+    """Rellenamos las etiquetas para cada punto"""
     T = np.zeros((K,N))
     cont = 0
     for k in range(0, K):
         T[k, cont:cont + Ns[k]] = np.ones(Ns[k])
         cont += Ns[k]
     
+    """Generamos los puntos"""
     X = np.zeros((2, N))
     cont = 0
     for k in range(0, K):
@@ -95,15 +99,17 @@ def creaDatos(K, distClases, dispMedia, minNxClase, maxNxClase):
     
 if __name__ == '__main__':
     mcc = MinimosCuadrados()
-    K = 4
-    distClases = 10
+    K = 4 
+    distClases = 10 
     dispMedia = 0.8
     minNxClase = 50
     maxNxClase = 100
     
+    """Entrenamiento"""
     X, T = creaDatos(K, distClases, dispMedia, minNxClase, maxNxClase)
     mcc.calculaW(X, T)
     
+    """Caso de prueba"""
     Xs = np.linspace(-15,15,200)
     Ys = np.linspace(-15,15,200)
     XX, YY = np.meshgrid(Xs, Ys)

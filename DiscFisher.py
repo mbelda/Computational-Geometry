@@ -52,12 +52,12 @@ class DiscFisher:
         
 
 
-    def proyecta(self, X):
-        Xp = []
+    def proyecta(self, X):   
         F, N = X.shape
+        Xp = np.zeros((1,N))
         for i in range(0, N):
             aux = (self.w.T).dot(X[:, i])
-            Xp.append(aux)
+            Xp[:, i] = aux
         
         return Xp
     
@@ -65,9 +65,9 @@ class DiscFisher:
         """Queremos calcular als raíces del polinomio F(c)"""
         p0 = Ns[0]/sum(Ns)
         p1 = Ns[1]/sum(Ns)
-        coefs = [(v[0]**2 * m[1]**2 - v[1]**2 * m[0]**2)/(2 * v[0]**2 * v[1]**2)
+        coefs = [(v[0]**2 * m[0,1]**2 - v[1]**2 * m[0,0]**2)/(2 * v[0]**2 * v[1]**2)
                     + np.log(p0/v[0]) - np.log(p1/v[1]),
-                (m[0] * v[1]**2 - m[1] * v[0]**2)/(v[0]**2 * v[1]**2),
+                (m[0,0] * v[1]**2 - m[0,1] * v[0]**2)/(v[0]**2 * v[1]**2),
                 (v[0]**2 - v[1]**2)/(2 * v[0]**2 * v[1]**2)]
         raices = np.roots(coefs)
         print(raices)
@@ -77,21 +77,6 @@ class DiscFisher:
             return raices[0]
         else:    
             return raices[1]
-    """
-    Clasifica los puntos dados, es decir, calcula las etiquetas que les
-    corresponden usando la matriz W de la clase
-    
-    Entrada
-        puntos
-    """
-    def clasificador(self, puntos):
-        if self.W is []:
-            print("Entrena al clasificador")
-            return
-        cols = puntos.shape[1]
-        Puntosg = np.vstack((np.ones(cols), puntos))
-        T = (self.W.T).dot(Puntosg)
-        return np.argmax(T, axis=0)
 
 """
 Crea datos aleatoriamente pero controlamos que los puntos de la misma clase
@@ -156,7 +141,8 @@ if __name__ == '__main__':
     mp = df.proyecta(medias)
     plt.plot(Xp, '-o')
     c = df.calculaC(Ns, varianzas, mp)
-    plt.plot(c, '-o')
+    plt.plot(c, '-x')
+    #quiero pintar wTx = c
     
 #    Xs = np.linspace(-15,15,200)
 #    Ys = np.linspace(-15,15,200)

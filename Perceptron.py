@@ -2,7 +2,7 @@
 """
 Created on Sat Mar  2 10:36:01 2019
 
-@author: Maria Jose Belda Beneyto
+@author: María José Belda Beneyto y Miguel Pascual Domínguez
 """
 
 import numpy as np

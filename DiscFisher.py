@@ -2,7 +2,7 @@
 """
 Created on Wed Apr 24 22:34:10 2019
 
-@author: Majo
+@author: María José Belda Beneyto y Miguel Pascual Domínguez
 """
 
 import numpy as np
@@ -71,8 +71,6 @@ class DiscFisher:
                 (v[0]**2 - v[1]**2)/(2 * v[0]**2 * v[1]**2)]
         raices = np.roots(coefs)
         print(raices)
-        #Falta que esto funcione bien y mirar que raiz es el minimo
-        #(hay a lo sumo 2 raices)
         if np.polyval(coefs, raices[0]) < np.polyval(coefs, raices[1]):
             return raices[0]
         else:    
@@ -82,10 +80,12 @@ class DiscFisher:
 Crea datos aleatoriamente pero controlamos que los puntos de la misma clase
 tengan cierta relación para que el clasificador funcione razonablemente bien
 
-
 Salida
-    X: matriz con los puntos creados
-    T: matriz con las etiquetas asociadas a los puntos en X
+    X: matriz con los puntos creados.
+    T: matriz con las etiquetas asociadas a los puntos en X.
+	Ns: lista con la cantidad de datos que hay de cada clase.
+	Varianzas: lista con las varianzas de cada clase.
+	Medias: lista con las medias por clases de los datos.
 """    
 def creaDatos(distClases, minNxClase, maxNxClase):
     
@@ -142,15 +142,7 @@ if __name__ == '__main__':
     plt.plot(Xp, '-o')
     c = df.calculaC(Ns, varianzas, mp)
     plt.plot(c, '-x')
-    #quiero pintar wTx = c
-    
-#    Xs = np.linspace(-15,15,200)
-#    Ys = np.linspace(-15,15,200)
-#    XX, YY = np.meshgrid(Xs, Ys)
-#    x = XX.flatten()
-#    y = YY.flatten()
-#    puntos = np.vstack((x, y))
-#      
-#    ZZ = df.clasificador(puntos).reshape((200,200))
-#    plt.plot(X[0, :], X[1, :], 'o')
-#    plt.contour(XX, YY, ZZ)
+    director = [df.w[1],-df.w[0]]
+    t = np.array([-20,10,20])
+    #cInv = np.linalg.solve(df.w.T,c) aqui es donde tendríamos que coger el c bueno, pero no se como hacerlo
+    plt.plot(t,(director[1]*t + c)/director[0] + c*director[1])

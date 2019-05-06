@@ -72,6 +72,7 @@ class DiscFisher:
         raices = np.roots(coefs)
         print(raices)
         coefs2 = [(v[0]**2-v[1]**2)/(v[0]**2 * v[1]**2), (m[0]*v[1]**2-m[1]*v[0]**2)/(v[0]**2 * v[1]**2)]
+        
         if np.polyval(coefs2, raices[0]) < np.polyval(coefs2, raices[1]):
             return raices[0]
         else:    
@@ -159,6 +160,7 @@ if __name__ == '__main__':
     
     plt.plot(Xp, '-o')
     plt.plot(c, '-x')
+    
     
     t = np.array([-20,10,20])
     plt.plot(t,(c - df.w[0]*t)/df.w[1])

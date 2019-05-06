@@ -65,10 +65,10 @@ class DiscFisher:
         """Queremos calcular als raíces del polinomio F(c)"""
         p0 = Ns[0]/sum(Ns)
         p1 = Ns[1]/sum(Ns)
-        coefs = [(v[0]**2 * m[0,1]**2 - v[1]**2 * m[0,0]**2)/(2 * v[0]**2 * v[1]**2)
-                    + np.log(p0/v[0]) - np.log(p1/v[1]),
-                (m[0,0] * v[1]**2 - m[0,1] * v[0]**2)/(v[0]**2 * v[1]**2),
-                (v[0]**2 - v[1]**2)/(2 * v[0]**2 * v[1]**2)]
+        coefs = [(v[0]**2 - v[1]**2)/(2 * v[0]**2 * v[1]**2),
+                 (m[0] * v[1]**2 - m[1] * v[0]**2)/(v[0]**2 * v[1]**2),
+                 (v[0]**2 * m[1]**2 - v[1]**2 * m[0]**2)/(2 * v[0]**2 * v[1]**2)
+                    + np.log(p0/v[0]) - np.log(p1/v[1])]
         raices = np.roots(coefs)
         print(raices)
         if np.polyval(coefs, raices[0]) < np.polyval(coefs, raices[1]):
@@ -90,9 +90,9 @@ Salida
 def creaDatos(distClases, minNxClase, maxNxClase):
     
     """Generamos la varianza de cada clase"""
-    varianzas = []
+    varianzas = np.zeros(2)
     for k in range(0,2):
-        varianzas.append(np.random.random()) 
+        varianzas[k]= np.random.random()
     
     """Generamos las mu distanciadas para que las clases esten separadas"""
     mus = [np.random.randn(2)*distClases] 
@@ -127,6 +127,20 @@ def creaDatos(distClases, minNxClase, maxNxClase):
         cont += Ns[k]
         
     return X, T, Ns, varianzas, medias
+
+def calculoMedias(Xp, Ns):
+    mp = np.zeros(2)
+    cont = 0
+    for k in range(2):
+        aux = 0
+        for i in range(cont, cont + Ns[k]):
+            aux += Xp[:, i]
+        mp[k] = aux/Ns[k]
+        cont += Ns[k]
+    
+    return mp
+
+        
     
 if __name__ == '__main__':
     df = DiscFisher()
@@ -138,11 +152,12 @@ if __name__ == '__main__':
     plt.plot(X[0, :], X[1, :], 'o')
     df.calculaW(X, medias, Ns)
     Xp = df.proyecta(X)
-    mp = df.proyecta(medias)
+    #mp = df.proyecta(medias)
+    mp = calculoMedias(Xp,Ns)
+    print(mp)
     plt.plot(Xp, '-o')
     c = df.calculaC(Ns, varianzas, mp)
     plt.plot(c, '-x')
-    director = [df.w[1],-df.w[0]]
     t = np.array([-20,10,20])
     #cInv = np.linalg.solve(df.w.T,c) aqui es donde tendríamos que coger el c bueno, pero no se como hacerlo
-    plt.plot(t,(director[1]*t + c)/director[0] + c*director[1])
+    plt.plot(t,(c - df.w[0]*t)/df.w[1])

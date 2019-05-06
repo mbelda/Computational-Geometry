@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 24 22:34:10 2019
 
-@author: María José Belda Beneyto y Miguel Pascual Domínguez
+@author: María José Belda Beneyto
+@author: Miguel Pascual Domínguez
 """
 
 import numpy as np
@@ -50,7 +50,17 @@ class DiscFisher:
         """Calculamos w"""
         self.w, residuals, rank, s = np.linalg.lstsq(Sw, medias[1] - medias[0])
         
+"""
+Crea datos aleatoriamente pero controlamos que los puntos de la misma clase
+tengan cierta relación para que el clasificador funcione razonablemente bien
 
+Entrada
+    self: clase de disc fisher que contiene la w que proyecta.
+    X: puntos a proyectar
+
+Salida
+    Xp: resultado de los puntos proyectados
+""" 
 
     def proyecta(self, X):   
         F, N = X.shape
@@ -62,7 +72,7 @@ class DiscFisher:
         return Xp
     
     def calculaC(self, Ns, v, m):
-        """Queremos calcular als raíces del polinomio F(c)"""
+        """Queremos calcular las raíces del polinomio F(c)"""
         p0 = Ns[0]/sum(Ns)
         p1 = Ns[1]/sum(Ns)
         coefs = [(v[0]**2 - v[1]**2)/(2 * v[0]**2 * v[1]**2),
@@ -81,6 +91,11 @@ class DiscFisher:
 """
 Crea datos aleatoriamente pero controlamos que los puntos de la misma clase
 tengan cierta relación para que el clasificador funcione razonablemente bien
+
+Entrada
+    distClases: distancia minima entre las clases
+    minNxClase: mínimo número de puntos por clase
+    maxNxClase: máximo número de puntos por clase
 
 Salida
     X: matriz con los puntos creados.
@@ -130,6 +145,17 @@ def creaDatos(distClases, minNxClase, maxNxClase):
         
     return X, T, Ns, varianzas, medias
 
+"""
+Cálcula la media de cada clase y las guarda en un vector.
+
+Entrada
+    Xp: matriz con los puntos
+    Ns: vector de número de puntos de cada clase
+
+Salida
+    mp: vector con las medias de cada clase
+""" 
+
 def calculoMedias(Xp, Ns):
     mp = np.zeros(2)
     cont = 0
@@ -156,11 +182,7 @@ if __name__ == '__main__':
     
     Xp = df.proyecta(X)
     mp = calculoMedias(Xp,Ns)
-    c = df.calculaC(Ns, varianzas, mp)
-    
-    plt.plot(Xp, '-o')
-    plt.plot(c, '-x')
-    
+    c = df.calculaC(Ns, varianzas, mp)    
     
     t = np.array([-20,10,20])
     plt.plot(t,(c - df.w[0]*t)/df.w[1])

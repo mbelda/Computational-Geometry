@@ -71,7 +71,8 @@ class DiscFisher:
                     + np.log(p0/v[0]) - np.log(p1/v[1])]
         raices = np.roots(coefs)
         print(raices)
-        if np.polyval(coefs, raices[0]) < np.polyval(coefs, raices[1]):
+        coefs2 = [(v[0]**2-v[1]**2)/(v[0]**2 * v[1]**2), (m[0]*v[1]**2-m[1]*v[0]**2)/(v[0]**2 * v[1]**2)]
+        if np.polyval(coefs2, raices[0]) < np.polyval(coefs2, raices[1]):
             return raices[0]
         else:    
             return raices[1]
@@ -151,13 +152,13 @@ if __name__ == '__main__':
     X, T, Ns, varianzas, medias = creaDatos(distClases, minNxClase, maxNxClase)
     plt.plot(X[0, :], X[1, :], 'o')
     df.calculaW(X, medias, Ns)
+    
     Xp = df.proyecta(X)
-    #mp = df.proyecta(medias)
     mp = calculoMedias(Xp,Ns)
-    print(mp)
-    plt.plot(Xp, '-o')
     c = df.calculaC(Ns, varianzas, mp)
+    
+    plt.plot(Xp, '-o')
     plt.plot(c, '-x')
+    
     t = np.array([-20,10,20])
-    #cInv = np.linalg.solve(df.w.T,c) aqui es donde tendríamos que coger el c bueno, pero no se como hacerlo
     plt.plot(t,(c - df.w[0]*t)/df.w[1])

@@ -100,10 +100,11 @@ def creaDatos(distClases, dispMedia, minNxClase, maxNxClase):
     T = np.hstack((np.ones(Ns[0]), (-1)*np.ones(Ns[1])))
     
     """Generamos los puntos"""
-    X = np.zeros((2, N))
+    X = np.zeros((3, N))
     cont = 0
     for k in range(0, 2):
-        X[:, cont:cont + Ns[k]] = np.random.randn(2, Ns[k])*dispMedia + mus[k][:, np.newaxis]
+        X[:2, cont:cont + Ns[k]] = np.random.randn(2, Ns[k])*dispMedia + mus[k][:, np.newaxis]
+        X[2,cont:cont + Ns[k]] = np.ones(Ns[k])
         cont += Ns[k]
     
     
@@ -131,7 +132,7 @@ if __name__ == '__main__':
     x = XX.flatten()
     y = YY.flatten()
     puntos = np.vstack((x, y))
-      
+
     ZZ = per.clasificador(puntos).reshape((200,200))
     plt.plot(X[0, :], X[1, :], 'o')
     plt.contour(XX, YY, ZZ)

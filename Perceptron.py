@@ -34,14 +34,16 @@ class Perceptron:
     """
     def calculaW(self, X, T):
         F, N = X.shape
-        wr = np.zeros(F)
+        wr = np.zeros(F+1)
         wrIgualwr1 = False
-
+        auxX = np.zeros((F+1,N))
+        auxX[:2,:]= X
+        auxX[2,:] = np.ones(N)
         while not(wrIgualwr1):
             for i in range(N):
-                if (wr.T).dot(X[:,i])*T[i] <= 0 :
+                if (wr.T).dot(auxX[:,i])*T[i] <= 0 :
                     #Mal clasificado
-                    wr1 = wr + X[:,i]*T[i]                        
+                    wr1 = wr + auxX[:,i]*T[i]                        
             if np.equal(wr1, wr).all():
                 wrIgualwr1 = True
             else:
@@ -60,9 +62,12 @@ class Perceptron:
     """
     def clasificador(self, X):
         F, N = X.shape
+        auxX = np.zeros((F+1,N))
+        auxX[:2,:]= X
+        auxX[2,:] = np.ones(N)
         T = np.ones((1,N))
         for i in range(N):
-            if (self.W.T).dot(X[:,i]) < 0:
+            if (self.W.T).dot(auxX[:,i]) < 0:
                 T[0, i] = (-1) * np.ones(1)
         return T
 
@@ -100,11 +105,10 @@ def creaDatos(distClases, dispMedia, minNxClase, maxNxClase):
     T = np.hstack((np.ones(Ns[0]), (-1)*np.ones(Ns[1])))
     
     """Generamos los puntos"""
-    X = np.zeros((3, N))
+    X = np.zeros((2, N))
     cont = 0
     for k in range(0, 2):
-        X[:2, cont:cont + Ns[k]] = np.random.randn(2, Ns[k])*dispMedia + mus[k][:, np.newaxis]
-        X[2,cont:cont + Ns[k]] = np.ones(Ns[k])
+        X[:, cont:cont + Ns[k]] = np.random.randn(2, Ns[k])*dispMedia + mus[k][:, np.newaxis]
         cont += Ns[k]
     
     

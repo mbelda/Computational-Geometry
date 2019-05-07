@@ -31,13 +31,11 @@ class DiscFisher:
     
     Entrada
         X: Puntos
+        medias: medias de cada clase
         T: Clases asociadas a los puntos en X
     """
     def calculaW(self, X, medias, Ns):
         """Calculamos Sw """
-        #Sw = Sw1 + Sw2
-        #Swk = suma n en Ck de (xn - mk)(xn - mk)T
-        #Sabemos que los Ns[0] primeros datos de X son los de la clase 1
         F, C = X.shape
         Sw1 = np.zeros((2,2))
         for i in range(0, Ns[0]):
@@ -50,18 +48,15 @@ class DiscFisher:
         """Calculamos w"""
         self.w, residuals, rank, s = np.linalg.lstsq(Sw, medias[1] - medias[0])
         
-"""
-Crea datos aleatoriamente pero controlamos que los puntos de la misma clase
-tengan cierta relación para que el clasificador funcione razonablemente bien
-
-Entrada
-    self: clase de disc fisher que contiene la w que proyecta.
-    X: puntos a proyectar
-
-Salida
-    Xp: resultado de los puntos proyectados
-""" 
-
+    """
+    Proyecta a R usando w los puntos que se le pasan
+    
+    Entrada
+        X: puntos a proyectar
+    
+    Salida
+        Xp: resultado de los puntos proyectados
+    """ 
     def proyecta(self, X):   
         F, N = X.shape
         Xp = np.zeros((1,N))
@@ -71,8 +66,19 @@ Salida
         
         return Xp
     
+    """
+    Calcula el punto c de R que marca la división entre las proyecciones
+    de los puntos de las clases. Este punto es una raíz del polinomio que definimos
+    
+    Entrada
+        Ns: Número de puntos de las clases
+        v: varianzas de las proyecciones
+        m: medias de las proyecciones
+        
+    Salida
+        c  
+    """
     def calculaC(self, Ns, v, m):
-        """Queremos calcular las raíces del polinomio F(c)"""
         p0 = Ns[0]/sum(Ns)
         p1 = Ns[1]/sum(Ns)
         coefs = [(v[0]**2 - v[1]**2)/(2 * v[0]**2 * v[1]**2),
@@ -155,7 +161,6 @@ Entrada
 Salida
     mp: vector con las medias de cada clase
 """ 
-
 def calculoMedias(Xp, Ns):
     mp = np.zeros(2)
     cont = 0

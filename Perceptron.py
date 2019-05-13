@@ -39,16 +39,17 @@ class Perceptron:
         auxX = np.zeros((F+1,N))
         auxX[:2,:]= X
         auxX[2,:] = np.ones(N)
+        print(auxX)
         while not(wrIgualwr1):
             for i in range(N):
                 if (wr.T).dot(auxX[:,i])*T[i] <= 0 :
                     #Mal clasificado
-                    wr1 = wr + auxX[:,i]*T[i]                        
+                    wr1 = wr + (auxX[:,i]*T[i]).T                        
             if np.equal(wr1, wr).all():
                 wrIgualwr1 = True
             else:
                 wr = np.copy(wr1)
-        
+        print(wr.shape)
         self.W = wr
 
     """
@@ -139,4 +140,7 @@ if __name__ == '__main__':
 
     ZZ = per.clasificador(puntos).reshape((200,200))
     plt.plot(X[0, :], X[1, :], 'o')
-    plt.contour(XX, YY, ZZ)
+    #plt.contour(XX, YY, ZZ)
+    a = np.min(X[0])
+    b = np.max(X[0])
+    plt.plot([a, b], [(-per.W[0]*a - per.W[2])/per.W[1], (-per.W[0]*b - per.W[2])/per.W[1]])

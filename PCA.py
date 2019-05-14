@@ -28,6 +28,16 @@ class PCA:
         return U, D2, Vt
 
     def calculadprima(self,D2,D,umbral):
+        """
+        Calcula la mínima dimensión a la que podemos comprimir los datos, 
+        sin eliminar más información de la que nos permite el umbral.
+        Entrada:
+            D2: matriz D de la descomposición
+            D: dimensión de los datos originales
+            umbral: número que nos indica cuanta información que podemos quitar
+        Salida:
+            i: mínima dimensión a la que se pueden comprimir los datos
+        """
         conseguido = False
         sumVarSing = np.sum(D2)
         i=1
@@ -37,7 +47,16 @@ class PCA:
         return i
     
     def comprimirDatos(self,U,dprima,datos,media):
-        
+        """
+        Calcula las coordenadas de los datos coomprimidos
+        Entrada:
+            U: matriz U de la descomposición SVD
+            dprima: dimensión a la que queremos comprimir
+            datos: datos cogidos de la base de datos mnist
+            media: media de los datos originales
+        Salida:
+            datosCompri: datos comprimidos 
+        """
         Xcentrados = datos - media[:,np.newaxis]
         
         UUt = U[:,:dprima].dot(U[:,:dprima].T) 

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon May 13 17:23:29 2019
-
-@author: Miguel
+@author: Miguel Pascual Domínguez
+@author: María José Belda Benyto
 """
 
 from scipy.io import loadmat

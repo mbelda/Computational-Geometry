@@ -99,24 +99,25 @@ if __name__ == '__main__':
     
     """Entrenamiento"""
     X, T, Ns, mus = creaDatos(C, distClases, dispMedia, minNxClase, maxNxClase)
-        
-    """Caso de prueba"""
-    punto = (2*distClases*np.random.randn(1))*np.random.random(2)
-    etiquetaEstimadaX = estima(K, X, T, Ns, C, punto)
-    claseEstimadaX = np.argmax(etiquetaEstimadaX)
     
     """Dibujar con colores, solo sirve para C = 3"""
     plt.plot(X[0, 0:Ns[0]], X[1, 0:Ns[0]], 'bo')
     plt.plot(X[0, Ns[0]:Ns[0]+Ns[1]], X[1, Ns[0]:Ns[0]+Ns[1]], 'ro')
     plt.plot(X[0, Ns[0]+Ns[1]:], X[1, Ns[0]+Ns[1]:], 'go')
+    for i in range(10): 
+        """Caso de prueba"""
+        punto = (2*distClases*np.random.randn(1))*np.random.random(2)
+        etiquetaEstimadaX = estima(K, X, T, Ns, C, punto)
+        claseEstimadaX = np.argmax(etiquetaEstimadaX)
     
-    if claseEstimadaX == 0:
-        color = 'bx'
-    elif claseEstimadaX == 1:
-        color = 'rx'
-    else:
-        color = 'gx'
-    plt.plot(punto[0], punto[1], color)
+        if claseEstimadaX == 0:
+            color = 'bx'
+        elif claseEstimadaX == 1:
+            color = 'rx'
+        else:
+            color = 'gx'
+        plt.plot(punto[0], punto[1], color)
+    
     
     """Dibujar para C != 3"""
 #    plt.plot(X[0, :], X[1, :], 'o')

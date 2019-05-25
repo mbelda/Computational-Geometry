@@ -48,16 +48,15 @@ class DiscFisher:
         """Calculamos w"""
         self.w, residuals, rank, s = np.linalg.lstsq(Sw, medias[1] - medias[0])
         
-    """
-    Proyecta a R usando w los puntos que se le pasan
-    
-    Entrada
-        X: puntos a proyectar
-    
-    Salida
-        Xp: resultado de los puntos proyectados
-    """ 
-    def proyecta(self, X):   
+   
+    def proyecta(self, X):  
+        """
+        Proyecta a R usando w los puntos que se le pasan
+        Entrada
+            X: puntos a proyectar    
+        Salida
+            Xp: resultado de los puntos proyectados
+        """
         F, N = X.shape
         Xp = np.zeros((1,N))
         for i in range(0, N):
@@ -66,19 +65,18 @@ class DiscFisher:
         
         return Xp
     
-    """
-    Calcula el punto c de R que marca la división entre las proyecciones
-    de los puntos de las clases. Este punto es una raíz del polinomio que definimos
-    
-    Entrada
-        Ns: Número de puntos de las clases
-        v: varianzas de las proyecciones
-        m: medias de las proyecciones
-        
-    Salida
-        c  
-    """
+   
     def calculaC(self, Ns, v, m):
+        """
+        Calcula el punto c de R que marca la división entre las proyecciones
+        de los puntos de las clases. Este punto es una raíz del polinomio que definimos
+        Entrada
+            Ns: Número de puntos de las clases
+            v: varianzas de las proyecciones
+            m: medias de las proyecciones  
+        Salida
+              c  
+        """
         p0 = Ns[0]/sum(Ns)
         p1 = Ns[1]/sum(Ns)
         coefs = [(v[0]**2 - v[1]**2)/(2 * v[0]**2 * v[1]**2),
@@ -94,23 +92,24 @@ class DiscFisher:
         else:    
             return raices[1]
 
-"""
-Crea datos aleatoriamente pero controlamos que los puntos de la misma clase
-tengan cierta relación para que el clasificador funcione razonablemente bien
-
-Entrada
-    distClases: distancia minima entre las clases
-    minNxClase: mínimo número de puntos por clase
-    maxNxClase: máximo número de puntos por clase
-
-Salida
-    X: matriz con los puntos creados.
-    T: matriz con las etiquetas asociadas a los puntos en X.
-	Ns: lista con la cantidad de datos que hay de cada clase.
-	Varianzas: lista con las varianzas de cada clase.
-	Medias: lista con las medias por clases de los datos.
-"""    
+   
 def creaDatos(distClases, minNxClase, maxNxClase):
+    """
+    Crea datos aleatoriamente pero controlamos que los puntos de la misma clase
+    tengan cierta relación para que el clasificador funcione razonablemente bien
+
+    Entrada
+        distClases: distancia minima entre las clases
+        minNxClase: mínimo número de puntos por clase
+        maxNxClase: máximo número de puntos por clase
+
+    Salida
+        X: matriz con los puntos creados.
+        T: matriz con las etiquetas asociadas a los puntos en X.
+         lista con la cantidad de datos que hay de cada clase.
+         ianzas: lista con las varianzas de cada clase.
+         ias: lista con las medias por clases de los datos.
+    """ 
     
     """Generamos la varianza de cada clase"""
     varianzas = np.zeros(2)
@@ -151,7 +150,9 @@ def creaDatos(distClases, minNxClase, maxNxClase):
         
     return X, T, Ns, varianzas, medias
 
-"""
+
+def calculoMedias(Xp, Ns):
+    """
 Cálcula la media de cada clase y las guarda en un vector.
 
 Entrada
@@ -161,7 +162,6 @@ Entrada
 Salida
     mp: vector con las medias de cada clase
 """ 
-def calculoMedias(Xp, Ns):
     mp = np.zeros(2)
     cont = 0
     for k in range(2):
@@ -189,5 +189,5 @@ if __name__ == '__main__':
     mp = calculoMedias(Xp,Ns)
     c = df.calculaC(Ns, varianzas, mp)    
     
-    t = np.array([-20,10,20])
-    plt.plot(t,(c - df.w[0]*t)/df.w[1])
+    t = [-20,20]
+    plt.plot(t,[(-c - df.w[0]*t[0])/df.w[1],(-c - df.w[0]*t[1])/df.w[1]])

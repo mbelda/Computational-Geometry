@@ -86,7 +86,7 @@ if __name__ == '__main__':
     #Comprimamos ahora todos los datos a la dimensión D' que es la óptima
     datosCompri= pca.comprimirDatos(U,dprima,datos,media)
     #Mostremos parte de los datos Comprimido
-    fig, axs = plt.subplots(2, 4, figsize=(50, 50))
+    fig, axs = plt.subplots(2, 3, figsize=(20, 20))
     for k, ax in enumerate(axs[0, :]):
         ax.imshow(datosCompri[:, k].reshape(28, 28), cmap='gray')
         if k == 0: ax.set_ylabel('D\'=%d'.ljust(20)%dprima, fontsize=50, rotation=0)
